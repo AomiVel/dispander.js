@@ -1,7 +1,3 @@
-※このリポジトリは削除される予定です※
-（削除された場合、別のリポジトリに移動します）
-
-
 # Dispander.js
 
 [dispander](https://github.com/DiscordBotPortalJP/dispander/)をJavaScriptで書いた版
