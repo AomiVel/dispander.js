@@ -1,6 +1,6 @@
 const regex_discord_message_url =(
     "(?!<)https://(ptb.|canary.)?discord(app)?.com/channels/" +
-    "(?<guild>[0-9]{18})/(?<channel>[0-9]{18})/(?<message>[0-9]{18})(?!>)"
+    "(?<guild>[0-9]{15,20})/(?<channel>[0-9]{15,20})/(?<message>[0-9]{15,20})(?!>)"
 )
 const regex_extra_url = (
     "\\?dispanded=(?<dispanded>true)(&children=(?<children>[0-9,]+))?"
