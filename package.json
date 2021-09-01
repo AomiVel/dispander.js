@@ -1,0 +1,11 @@
+{
+    "name": "dispander.js",
+    "version": "1.0.0",
+    "description": "dispander.js",
+    "main": "index.js",
+    "author": "AomiVel",
+    "license": "MIT",
+    "dependencies": {
+        "discord.js": "*"
+    }
+}

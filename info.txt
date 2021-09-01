@@ -1,0 +1,47 @@
+展開するメッセージがURLを送信したサーバーと違うサーバーのものだったら無視
+
+
+メインEmbed：
+    author:
+        name: member.displayName
+        icon_url: author.displayAvatarURL
+        url: message.jump_url
+    footer:
+        icon_url: message.guild.iconURL
+        text: message.channel.name
+    color: 0xffffff
+    timestamp: message.createdAt
+
+
+展開メッセージが1つだけ：
+    send_embeds = []
+
+    send_embeds + メインEmbed
+    メッセージ内容がある：
+        メインEmbed + description(message.content)
+    
+    画像が1つ：
+        メインEmbed + image(url=message.attachments.first.proxyURL)
+    もしくは画像が2つ以上：
+        画像をまわす：
+            send_embeds +
+                Embed + image(url=message.attachments.first.proxyURL)
+        
+    
+    Embedがある：
+        Embedをまわす：
+            send_embeds +
+                Embed.toJSON
+    
+    
+    send_embedsが10個以下：
+        send(embeds=send_embeds)
+    
+    もしくはsend_embedsが11個：
+        send(embeds=[send_embeds[0]])
+            .reply(embeds=send_embeds.slice(1))
+    
+    それいがい(send_embedsが12個以上)：
+        send(embeds=send_embeds.slice(0, 10))
+            Embedを10個ずつまわす：
+                .reply(embeds=send_embeds.slice(i, i+10))
