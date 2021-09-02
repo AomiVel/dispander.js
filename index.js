@@ -11,7 +11,7 @@ const DELETE_REACTION_EMOJI = "🗑️"
 
 function Dispander(client, delete_reaction=true, delete_reaction_emoji=DELETE_REACTION_EMOJI) {
     client.on('messageCreate', message => {
-        dispand(message)
+        dispand(message, delete_reaction, delete_reaction_emoji)
     })
 
     client.on('raw', (resp) => {
@@ -21,7 +21,7 @@ function Dispander(client, delete_reaction=true, delete_reaction_emoji=DELETE_RE
 exports.Dispander = Dispander
 
 
-function dispand(message, delete_reaction=true, delete_reaction_emoji=DELETE_REACTION_EMOJI) {
+function dispand(message=none, delete_reaction=true, delete_reaction_emoji=DELETE_REACTION_EMOJI) {
     for (const ids of message.content.matchAll(regex_discord_message_url)) {
         if (ids.groups.guild != message.guild.id) {
             continue
