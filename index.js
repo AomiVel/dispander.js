@@ -9,7 +9,7 @@ const regex_extra_url = (
 const DELETE_REACTION_EMOJI = "🗑️"
 
 
-function Dispander(client) {
+function Dispander(client, delete_reaction=true, delete_reaction_emoji=DELETE_REACTION_EMOJI) {
     client.on('messageCreate', message => {
         dispand(message)
     })
@@ -21,7 +21,7 @@ function Dispander(client) {
 exports.Dispander = Dispander
 
 
-function dispand(message) {
+function dispand(message, delete_reaction=true, delete_reaction_emoji=DELETE_REACTION_EMOJI) {
     for (const ids of message.content.matchAll(regex_discord_message_url)) {
         if (ids.groups.guild != message.guild.id) {
             continue
@@ -29,7 +29,7 @@ function dispand(message) {
 
         message.guild.channels.cache.get(ids.groups.channel).messages.fetch(ids.groups.message)
             .then((msg) => {
-                _send_messages(msg)
+                _send_messages(msg, delete_reaction, delete_reaction_emoji)
             })
             .catch()
     }
@@ -95,7 +95,7 @@ function _create_main_base_embed(message) {
 }
 
 
-function _send_messages(message) {
+function _send_messages(message, delete_reaction, delete_reaction_emoji) {
     send_embeds = []
 
     main_embed = _create_main_base_embed(message);
@@ -124,11 +124,17 @@ function _send_messages(message) {
     }
 
     if (send_embeds.length < 11) {
-        message.channel.send( { embeds: send_embeds } ).then(msg => msg.react(DELETE_REACTION_EMOJI))
+        message.channel.send( { embeds: send_embeds } ).then(msg => {
+            if (delete_reaction){
+                msg.react(DELETE_REACTION_EMOJI)
+            }
+        })
     }
     else if (send_embeds.length == 11){
         message.channel.send( { embeds: [send_embeds[0]] } ).then((main_message) => {
-            main_message.react(DELETE_REACTION_EMOJI)
+            if (delete_reaction){
+                main_message.react(DELETE_REACTION_EMOJI)
+            }
             main_message.reply( { embeds: send_embeds.slice(1) } ).then(rep_msg => {
                 edit_embed = send_embeds[0]
                 edit_embed.author.url = edit_embed.author.url + '&children=' + rep_msg.id
@@ -139,7 +145,9 @@ function _send_messages(message) {
     }
     else {
         message.channel.send( { embeds: send_embeds.slice(0, 10) } ).then(async (main_message) => {
-            await main_message.react(DELETE_REACTION_EMOJI)
+            if (delete_reaction){
+                await main_message.react(DELETE_REACTION_EMOJI)
+            }
             replied_messages = []
             for (var i = 10; i < send_embeds.length; i+=10) {
                 rep_msg = await main_message.reply( { embeds: send_embeds.slice(i, i+10) } )
