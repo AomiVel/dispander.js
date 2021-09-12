@@ -21,7 +21,7 @@ function Dispander(client, delete_reaction=true, delete_reaction_emoji=DELETE_RE
 exports.Dispander = Dispander
 
 
-function dispand(message=none, delete_reaction=true, delete_reaction_emoji=DELETE_REACTION_EMOJI) {
+function dispand(message=null, delete_reaction=true, delete_reaction_emoji=DELETE_REACTION_EMOJI) {
     for (const ids of message.content.matchAll(regex_discord_message_url)) {
         if (ids.groups.guild != message.guild.id) {
             continue
@@ -29,7 +29,7 @@ function dispand(message=none, delete_reaction=true, delete_reaction_emoji=DELET
 
         message.guild.channels.cache.get(ids.groups.channel).messages.fetch(ids.groups.message)
             .then((msg) => {
-                _send_messages(msg, delete_reaction, delete_reaction_emoji)
+                _send_messages(message.channel, msg, delete_reaction, delete_reaction_emoji)
             })
             .catch()
     }
@@ -95,7 +95,7 @@ function _create_main_base_embed(message) {
 }
 
 
-function _send_messages(message, delete_reaction, delete_reaction_emoji) {
+function _send_messages(channel, message, delete_reaction, delete_reaction_emoji) {
     send_embeds = []
 
     main_embed = _create_main_base_embed(message);
@@ -124,14 +124,14 @@ function _send_messages(message, delete_reaction, delete_reaction_emoji) {
     }
 
     if (send_embeds.length < 11) {
-        message.channel.send( { embeds: send_embeds } ).then(msg => {
+        channel.send( { embeds: send_embeds } ).then(msg => {
             if (delete_reaction){
                 msg.react(DELETE_REACTION_EMOJI)
             }
         })
     }
     else if (send_embeds.length == 11){
-        message.channel.send( { embeds: [send_embeds[0]] } ).then((main_message) => {
+        channel.send( { embeds: [send_embeds[0]] } ).then((main_message) => {
             if (delete_reaction){
                 main_message.react(DELETE_REACTION_EMOJI)
             }
@@ -144,7 +144,7 @@ function _send_messages(message, delete_reaction, delete_reaction_emoji) {
         })
     }
     else {
-        message.channel.send( { embeds: send_embeds.slice(0, 10) } ).then(async (main_message) => {
+        channel.send( { embeds: send_embeds.slice(0, 10) } ).then(async (main_message) => {
             if (delete_reaction){
                 await main_message.react(DELETE_REACTION_EMOJI)
             }
